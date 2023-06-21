@@ -18,23 +18,25 @@
             }
         }
 
+        // fill a glass - the time it takes to fill a glass depends on the number of non-null parents
         public double Fill()
         {
             var parents = new List<Glass> { LeftParent, RightParent };
+            var numberOfNotNullParents = parents.Count(p => p != null);
             // two parents, 5s to fill glass
-            if (parents.Count == 2)
+            if (numberOfNotNullParents == 2)
             {
                 return 5.0;
             }
-            // one parent, 10s to fill glass
-            else if (parents.Count == 1)
+            // one parent, 20s to fill glass
+            else if (numberOfNotNullParents == 1)
             {
-                return 10.0;
+                return 20.0;
             }
             // no parents, 10s to fill glass
             else
             {
-                return 20.0;
+                return 10.0;
             }
         }
     }

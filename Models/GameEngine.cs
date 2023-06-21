@@ -28,6 +28,10 @@
             return FillGlasses();
         }
 
+        /// <summary>
+        /// Fill all glasses of the tower array and calculate the total time
+        /// </summary>
+        /// <returns></returns>
         private double FillGlasses()
         {
             foreach (var row in _GlassTower)
@@ -65,12 +69,12 @@
                     var hasLeftParent = IsValidIndex(prevRowLength, j - 1);
                     var hasRightParent = IsValidIndex(prevRowLength, j);
 
-                    // current node has only one left parent
+                    // current node only has a left parent
                     if (hasLeftParent && !hasRightParent)
                     {
                         _GlassTower[i][j] = new Glass(_GlassTower[i - 1][j - 1], null);
                     }
-                    // current node has only one right parent
+                    // current node only has a right parent
                     else if (!hasLeftParent && hasRightParent)
                     {
                         _GlassTower[i][j] = new Glass(null, _GlassTower[i - 1][j]);
@@ -80,7 +84,7 @@
                     {
                         _GlassTower[i][j] = new Glass(_GlassTower[i - 1][j - 1], _GlassTower[i - 1][j]);
                     }
-                    // we're at the root node so create a new Glass without parents
+                    // current node is the root - create a new Glass without parents
                     else
                     {
                         _GlassTower[i][j] = new Glass();
