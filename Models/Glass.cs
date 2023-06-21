@@ -1,35 +1,43 @@
-﻿namespace WaterOverflow.Models
+﻿using System.Transactions;
+
+namespace WaterOverflow.Models
 {
     internal class Glass
     {
 
         public Glass LeftParent { get; set; }
         public Glass RightParent { get; set; }
+        List<Glass> Parents = new List<Glass>();
+        private int _NumberOfNotNullParents;
+        public readonly double _FillTime;
 
         public Glass(Glass leftParent = null, Glass rightParent = null)
         {
             if (leftParent != null)
             {
                 LeftParent = leftParent;
+                Parents.Add(leftParent);
+                
             }
             if (rightParent != null)
             {
                 RightParent = rightParent;
+                Parents.Add(rightParent);
             }
+
+             _NumberOfNotNullParents = Parents.Count(p => p != null);
+            _FillTime = SetGlassFillTime();
         }
 
-        // fill a glass - the time it takes to fill a glass depends on the number of non-null parents
-        public double Fill()
+        private double SetGlassFillTime()
         {
-            var parents = new List<Glass> { LeftParent, RightParent };
-            var numberOfNotNullParents = parents.Count(p => p != null);
             // two parents, 5s to fill glass
-            if (numberOfNotNullParents == 2)
+            if (_NumberOfNotNullParents == 2)
             {
                 return 5.0;
             }
             // one parent, 20s to fill glass
-            else if (numberOfNotNullParents == 1)
+            else if (_NumberOfNotNullParents == 1)
             {
                 return 20.0;
             }
@@ -39,5 +47,6 @@
                 return 10.0;
             }
         }
+        
     }
 }

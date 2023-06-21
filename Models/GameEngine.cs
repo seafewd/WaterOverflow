@@ -4,7 +4,6 @@
     {
         private int _Rows;
         private int _GlassIndex;
-        private double _Timer;
         private Glass[][] _GlassTower;
 
         public GameEngine(int rows, int glassIndex) 
@@ -22,27 +21,48 @@
             _GlassTower = new Glass[rows][];
         }
 
+        /// <summary>
+        /// Builds tower and fills glasses
+        /// </summary>
+        /// <returns></returns>
         public double Run()
         {
             BuildGlassTower();
-            return FillGlasses();
+            return GetFillTime();
         }
 
         /// <summary>
         /// Fill all glasses of the tower array and calculate the total time
         /// </summary>
         /// <returns></returns>
-        private double FillGlasses()
+        private double GetFillTime()
         {
-            foreach (var row in _GlassTower)
-            {
-                foreach (var glass in row)
-                {
-                    _Timer += glass.Fill();
-                }
-            }
-            return _Timer;
+            // -1 because both arrays have 0 index
+            var glass = _GlassTower[_Rows - 1][_GlassIndex - 1]!;
+            return CalculateFillTime(glass);
+        }
 
+        /// <summary>
+        /// Get the total time it takes for the given glass to fill up
+        /// Runs "upwards" recursively from the current glass node
+        /// and checks the time it takes for its parents to fill up, and so on...
+        /// </summary>
+        /// <param name="glass"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public double CalculateFillTime(Glass glass, double time = 0)
+        {
+            if (glass == null)
+            {
+                return 0;
+            }
+
+            // we only need to keep track of one parent since we're always
+            // moving upwards
+            var parent = glass.LeftParent ?? glass.RightParent;
+
+            time += glass._FillTime + CalculateFillTime(parent, time);
+            return time;
         }
 
         /// <summary>
